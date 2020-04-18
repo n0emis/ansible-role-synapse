@@ -1,0 +1,4 @@
+---
+- name: reload synapse
+  service: matrix-synapse
+    state: reloaded

@@ -1,0 +1,9 @@
+---
+- name: Update apt cache.
+  apt: update_cache=yes cache_valid_time=86400
+  changed_when: false
+
+- name: Ensure dependencies are installed
+  apt:
+    name: "{{ synapse_dependencies }}"
+    state: present

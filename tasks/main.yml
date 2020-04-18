@@ -1,0 +1,15 @@
+---
+# Variable setup.
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yml"
+
+# Setup/install tasks.
+- include_tasks: "setup-{{ ansible_os_family }}.yml"
+
+- name: Make sure synapse is installed to the VEnv
+  pip:
+    name:
+      - matrix-synapse
+    virtualenv: "{{ synapse_venv_path }}"
+    virtualenv_command: /usr/bin/python3 -m venv
+    extra_args: --upgrade

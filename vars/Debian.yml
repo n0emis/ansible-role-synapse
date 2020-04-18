@@ -1,0 +1,12 @@
+---
+synapse_dependencies:
+  - build-essential
+  - python3-dev
+  - libffi-dev
+  - python3-pip
+  - python3-setuptools
+  - python3-virtualenv
+  - sqlite3
+  - libssl-dev
+  - libjpeg-dev
+  - libxslt1-dev

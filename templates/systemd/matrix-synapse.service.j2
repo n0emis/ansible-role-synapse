@@ -1,0 +1,32 @@
+#jinja2: lstrip_blocks: "True"
+[Unit]
+Description=Synapse server
+{% for service in synapse_systemd_required_services_list %}
+Requires={{ service }}
+After={{ service }}
+{% endfor %}
+{% for service in synapse_systemd_wanted_services_list %}
+Wants={{ service }}
+{% endfor %}
+
+[Service]
+Type=simple
+PIDFile=/run/synapse.pid
+ExecStartPre={{ synapse_venv_path }}/bin/python -m synapse.app.homeserver --config-path={{ synapse_config_path }}/homeserver.yaml --config-path={{ synapse_config_path }}/conf.d/ --generate-keys
+{% if synapse_s3_media_store_enabled %}
+# Allow for some time before starting, so that media store can mount.
+# Mounting can happen later too, but if we start writing,
+# we'd write files to the local filesystem and fusermount will complain.
+ExecStartPre=/bin/sleep 3
+{% endif %}
+User=matrix-synapse
+WorkingDirectory={{ synapse_data_directory }}
+EnvironmentFile=/etc/default/matrix-synapse
+ExecStart={{ synapse_venv_path }}/bin/python -m synapse.app.homeserver --config-path={{ synapse_config_path }}/homeserver.yaml --config-path={{ synapse_config_path }}/conf.d/
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=3
+SyslogIdentifier=matrix-synapse
+
+[Install]
+WantedBy=multi-user.target
