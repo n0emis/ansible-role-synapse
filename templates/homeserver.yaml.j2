@@ -31,7 +31,7 @@ pid_file: /run/synapse.pid
 # use synapse with a reverse proxy, this should be the URL to reach
 # synapse via the proxy.
 #
-public_baseurl: https://{{ synapse_server_fqn_matrix }}/
+public_baseurl: https://{{ synapse_server_fqdn_matrix }}/
 
 # Set the soft limit on the number of file descriptors synapse can use
 # Zero is used to indicate synapse should set the soft limit to the
@@ -425,14 +425,14 @@ retention:
 # instance, if using certbot, use `fullchain.pem` as your certificate,
 # not `cert.pem`).
 #
-{! if synapse_tls_certificate_path !}
+{% if synapse_tls_certificate_path is defined %}
 tls_certificate_path: {{ synapse_tls_certificate_path|to_json }}
-
+{% endif %}
 # PEM-encoded private key for TLS
 #
-{! if synapse_tls_private_key_path !}
+{% if synapse_tls_private_key_path is defined %}
 tls_private_key_path: {{ synapse_tls_private_key_path|to_json }}
-{! endif !}
+{% endif %}
 
 # Whether to verify TLS server certificates for outbound federation requests.
 #
@@ -603,7 +603,7 @@ event_cache_size: "{{ synapse_event_cache_size }}"
 # A yaml python logging config file as described by
 # https://docs.python.org/3.7/library/logging.config.html#configuration-dictionary-schema
 #
-log_config: "{{ synapse_config_path }}/{{ synapse_server_fqn_matrix }}.log.config"
+log_config: "{{ synapse_config_path }}/{{ synapse_server_fqdn_matrix }}.log.config"
 
 
 ## Ratelimiting ##
@@ -1161,7 +1161,7 @@ form_secret: {{ synapse_form_secret|string|to_json }}
 
 # Path to the signing key to sign messages with
 #
-signing_key_path: "{{ synapse_config_path }}/{{ synapse_server_fqn_matrix }}.signing.key"
+signing_key_path: "{{ synapse_config_path }}/{{ synapse_server_fqdn_matrix }}.signing.key"
 
 # The keys that the server used to sign messages with but won't use
 # to sign new messages.
@@ -1414,9 +1414,9 @@ password_config:
    # Uncomment and change to a secret random string for extra security.
    # DO NOT CHANGE THIS AFTER INITIAL SETUP!
    #
-   {! if synapse_password_config_pepper !}
+   {% if synapse_password_config_pepper %}
    pepper: {{ synapse_password_config_pepper|string|to_json }}
-   {! endif !}
+   {% endif %}
 
 
 {% if synapse_email_enabled %}
@@ -1847,5 +1847,5 @@ opentracing:
     #  logging:
     #    false
 
-
+{{ synapse_homeserver_config_extra_options }}
 # vim:ft=yaml

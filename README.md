@@ -1,21 +1,41 @@
-# Synapse Name
-A ansible Role to install a Synapse Homeserver
+# Ansible role for Matrix Synapse
+
+Ansible role for installation and configuration of matrix synapse
 
 ## Requirements
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+
+* Database (recommend: PostgreSQL) 
+* (optional) An e-mail server
 
 ## Role Variables
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+
+| Variable Name | Function | Default value | Comment |
+| ------------- | -------- | ------------- | ------- |
+| `synapse_user` | User created for running the systemd service | `matrix-synapse` |
+| `synapse_group` | Group for the user created for the systemd service | `{{ synapse_user }}` |
+| `synapse_pip_version` | Version of matrix-synapse that is going to be installed _(required)_ | | 
+| `synapse_systemd_service_name` | The name of the systemd service file | `matrix-synapse` |
+| `synapse_config_path` | Path of synapse configuration directory | `/etc/matrix-synapse` |
+| `synapse_venv_path` | Path of python virtualenv directory | `/opt/venvs/matrix-synapse` |
+| `synapse_data_directory` | Path of synapse data directory | `/var/lib/matrix-synapse` |
+| `synapse_media_store_path` | Path of synapse media_store directory | `{{ synapse_data_directory }}/media-store` |
+
+### homeserver.yaml
+
+#### Other
+You can define any other options for homeserver.yaml in the ansible variable `synapse_homeserver_config_extra_options`
 
 ## Dependencies
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+This role does not have any dependencies
 
 ## Example Playbook
+
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
+```yaml
+- hosts: servers
+  roles:
+     - { role: n0emis.synapse }
+```
 ## License
+
 MIT

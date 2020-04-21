@@ -4,7 +4,12 @@ synapse_venv_path: /opt/venvs/matrix-synapse
 synapse_data_directory: /var/lib/matrix-synapse
 synapse_media_store_path: "{{ synapse_data_directory }}/media-store"
 
-synapse_server_fqn_matrix: "{{ synapse_domain }}"
+synapse_user: matrix-synapse
+synapse_group: "{{ synapse_user }}"
+
+synapse_server_fqdn_matrix: "{{ synapse_domain }}"
+
+synapse_systemd_service_name: "matrix-synapse"
 
 # List of systemd services that matrix-synapse.service depends on
 synapse_systemd_required_services_list: []
@@ -19,6 +24,7 @@ synapse_systemd_wanted_services_list: []
 # synapse_template_synapse_homeserver: "{{ playbook_dir }}/inventory/host_vars/<host>/homeserver.yaml.j2"
 synapse_template_synapse_homeserver: "{{ role_path }}/templates/homeserver.yaml.j2"
 synapse_template_synapse_log: "{{ role_path }}/templates/synapse.log.config.j2"
+synapse_homeserver_config_extra_options: ""
 
 synapse_macaroon_secret_key: ""
 synapse_registration_shared_secret: "{{ synapse_macaroon_secret_key }}"
@@ -86,8 +92,8 @@ synapse_federation_rr_transactions_per_room_per_second: 50
 # If you're serving Synapse behind an HTTPS-capable reverse-proxy,
 # you can disable the TLS listener (`synapse_tls_federation_listener_enabled: false`).
 synapse_tls_federation_listener_enabled: false
-#synapse_tls_certificate_path: "/data/{{ synapse_server_fqn_matrix }}.tls.crt"
-#synapse_tls_private_key_path: "/data/{{ synapse_server_fqn_matrix }}.tls.key"
+#synapse_tls_certificate_path: "/data/{{ synapse_server_fqdn_matrix }}.tls.crt"
+#synapse_tls_private_key_path: "/data/{{ synapse_server_fqdn_matrix }}.tls.key"
 
 # Enable this to allow Synapse to report utilization statistics about your server to matrix.org
 # (things like number of users, number of messages sent, uptime, load, etc.)
@@ -226,7 +232,7 @@ synapse_email_smtp_host: ""
 synapse_email_smtp_port: 587
 synapse_email_smtp_require_transport_security: false
 synapse_email_notif_from: "Matrix <matrix@{{ synapse_domain }}>"
-synapse_email_client_base_url: "https://{{ synapse_server_fqn_riot }}"
+synapse_email_client_base_url: "{% if synapse_server_fqdn_riot is defined %}https://{{ synapse_server_fqdn_riot }}{% endif %}"
 
 
 # Enable this to activate the REST auth password provider module.

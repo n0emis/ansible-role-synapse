@@ -1,4 +1,5 @@
 ---
 - name: reload synapse
-  service: matrix-synapse
+  systemd:
+    name: matrix-synapse.service
     state: reloaded

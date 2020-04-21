@@ -6,10 +6,58 @@
 # Setup/install tasks.
 - include_tasks: "setup-{{ ansible_os_family }}.yml"
 
+- name: Create group
+  group:
+    name: "{{ synapse_group }}"
+    state: present
+
+- name: Create user
+  user:
+    name: "{{ synapse_user }}"
+    group: "{{ synapse_group }}"
+    create_home: no
+
+- name: Create required folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ synapse_user }}"
+    group: "{{ synapse_group }}"
+  with_items:
+    - "{{ synapse_config_path }}"
+    - "{{ synapse_config_path }}/conf.d"
+    - "{{ synapse_venv_path }}"
+    - "{{ synapse_data_directory }}"
+    - "{{ synapse_media_store_path }}"
+
+- name: Add homeserver config
+  template:
+    src: "homeserver.yaml.j2"
+    dest: "{{ synapse_config_path }}/homeserver.yaml"
+    owner: "{{ synapse_user }}"
+    group: "{{ synapse_group }}"
+    mode: "0440"
+
+- name: Add log config
+  template:
+    src: "synapse.log.config.j2"
+    dest: "{{ synapse_config_path }}/{{ synapse_server_fqdn_matrix }}.log.config"
+    owner: "{{ synapse_user }}"
+    group: "{{ synapse_group }}"
+    mode: "0440"
+
 - name: Make sure synapse is installed to the VEnv
   pip:
     name:
       - matrix-synapse
+    version: "{{ synapse_pip_version }}"
     virtualenv: "{{ synapse_venv_path }}"
     virtualenv_command: /usr/bin/python3 -m venv
     extra_args: --upgrade
+  become: yes
+  become_user: "{{ synapse_user }}"
+
+- name: Upload systemd service file
+  template:
+    src: "systemd/matrix-synapse.service.j2"
+    dest: "/etc/systemd/system/{{ synapse_systemd_service_name }}.service"
