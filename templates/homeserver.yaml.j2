@@ -206,7 +206,7 @@ listeners:
 
 {% if synapse_federation_enabled and synapse_tls_federation_listener_enabled %}
   # TLS-enabled listener: for when matrix traffic is sent directly to synapse.
-  - port: 8448
+  - port: {{ synapse_tls_federation_listener_port }}
     tls: true
     bind_addresses: ['::']
     type: http
@@ -217,22 +217,24 @@ listeners:
         compress: false
 {% endif %}
 
+{% if synapse_http_listener_enabled %}
   # Unsecure HTTP listener (Client API): for when matrix traffic passes through a reverse proxy
   # that unwraps TLS.
-  - port: 8008
+  - port: {{ synapse_http_listener_port }}
     tls: false
     bind_addresses: ['::']
     type: http
     x_forwarded: true
 
     resources:
-      - names: [client]
+      - names: [client{% if synapse_federation_enabled %},federation{% endif %}]
         compress: false
+{% endif %}
 
 {% if synapse_federation_enabled %}
   # Unsecure HTTP listener (Federation API): for when matrix traffic passes through a reverse proxy
   # that unwraps TLS.
-  - port: 8048
+  - port: {{ synapse_federation_listener_port }}
     tls: false
     bind_addresses: ['::']
     type: http
@@ -246,7 +248,7 @@ listeners:
 {% if synapse_manhole_enabled %}
   # Turn on the twisted ssh manhole service on localhost on the given
   # port.
-  - port: 9000
+  - port: synapse_manhole_port
     bind_addresses: ['0.0.0.0']
     type: manhole
 {% endif %}
@@ -1436,8 +1438,12 @@ email:
   # Username/password for authentication to the SMTP server. By default, no
   # authentication is attempted.
   #
-  # smtp_user: "exampleusername"
-  # smtp_pass: "examplepassword"
+  {% if synapse_email_smtp_user != "" %}
+  smtp_user: {{ synapse_email_smtp_user|to_json }}
+  {% endif %}
+  {% if synapse_email_smtp_password != "" %}
+  smtp_pass: {{ synapse_email_smtp_password|to_json }}
+  {% endif %}
 
   # Uncomment the following to require TLS transport security for SMTP.
   # By default, Synapse will connect over plain text, and will then switch to
@@ -1475,7 +1481,7 @@ email:
   # notifications for new users. Enabled by default.
   #
   #notif_for_new_users: false
-  notif_for_new_users: True
+  notif_for_new_users: false
 
   # Custom URL for client links within the email notifications. By default
   # links will be based on "https://matrix.to".

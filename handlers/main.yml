@@ -3,3 +3,8 @@
   systemd:
     name: matrix-synapse.service
     state: reloaded
+
+- name: restart synapse
+  systemd:
+    name: matrix-synapse.service
+    state: restarted

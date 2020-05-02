@@ -15,7 +15,8 @@
   user:
     name: "{{ synapse_user }}"
     group: "{{ synapse_group }}"
-    create_home: no
+    create_home: yes
+    home: "{{ synapse_venv_path }}"
 
 - name: Create required folders
   file:
@@ -26,9 +27,16 @@
   with_items:
     - "{{ synapse_config_path }}"
     - "{{ synapse_config_path }}/conf.d"
-    - "{{ synapse_venv_path }}"
     - "{{ synapse_data_directory }}"
     - "{{ synapse_media_store_path }}"
+
+- name: Add signing key
+  copy:
+    dest: "{{ synapse_config_path }}/{{ synapse_server_fqdn_matrix }}.signing.key"
+    content: "{{ synapse_signing_key }}"
+    owner: "{{ synapse_user }}"
+    group: "{{ synapse_group }}"
+    mode: "0440"
 
 - name: Add homeserver config
   template:
@@ -37,6 +45,7 @@
     owner: "{{ synapse_user }}"
     group: "{{ synapse_group }}"
     mode: "0440"
+  notify: restart synapse
 
 - name: Add log config
   template:
@@ -45,12 +54,14 @@
     owner: "{{ synapse_user }}"
     group: "{{ synapse_group }}"
     mode: "0440"
+  notify: restart synapse
 
 - name: Make sure synapse is installed to the VEnv
   pip:
     name:
-      - matrix-synapse
-    version: "{{ synapse_pip_version }}"
+      - pip
+      - setuptools
+      - "matrix-synapse[all]=={{ synapse_pip_version }}"
     virtualenv: "{{ synapse_venv_path }}"
     virtualenv_command: /usr/bin/python3 -m venv
     extra_args: --upgrade
@@ -61,3 +72,16 @@
   template:
     src: "systemd/matrix-synapse.service.j2"
     dest: "/etc/systemd/system/{{ synapse_systemd_service_name }}.service"
+
+- name: Upload service defaults
+  template:
+    src: "env-synapse.j2"
+    dest: "/etc/default/matrix-synapse"
+  notify: restart synapse
+
+- name: Make sure synapse systemd-service is enabled and running
+  service:
+    name: "matrix-synapse"
+    state: started
+    enabled: yes
+    daemon-reload: yes

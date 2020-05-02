@@ -54,8 +54,8 @@ synapse_tmp_directory_size_mb: "{{ synapse_max_upload_size_mb * 50 }}"
 # You can work around it by adding `RateLimitInterval=0` and `RateLimitBurst=0` under `[Storage]` in
 # `/etc/systemd/journald.conf` and restarting the logging service (`systemctl restart systemd-journald`).
 synapse_log_level: "WARNING"
-synapse_storage_sql_log_level: "WARNING"
 synapse_root_log_level: "WARNING"
+synapse_storage_sql_log_level: "WARNING"
 
 # Rate limits
 synapse_rc_message:
@@ -92,8 +92,13 @@ synapse_federation_rr_transactions_per_room_per_second: 50
 # If you're serving Synapse behind an HTTPS-capable reverse-proxy,
 # you can disable the TLS listener (`synapse_tls_federation_listener_enabled: false`).
 synapse_tls_federation_listener_enabled: false
+synapse_tls_federation_listener_port: 8448
 #synapse_tls_certificate_path: "/data/{{ synapse_server_fqdn_matrix }}.tls.crt"
 #synapse_tls_private_key_path: "/data/{{ synapse_server_fqdn_matrix }}.tls.key"
+
+synapse_http_listener_enabled: true
+synapse_http_listener_port: "8008"
+synapse_federation_listener_port: "8048"
 
 # Enable this to allow Synapse to report utilization statistics about your server to matrix.org
 # (things like number of users, number of messages sent, uptime, load, etc.)
@@ -124,11 +129,11 @@ synapse_registrations_require_3pid: []
 
 # The server to use for email threepid validation. When empty, Synapse does it by itself.
 # Otherwise, this should be pointed to an identity server.
-synapse_account_threepid_delegates_email: ''
+synapse_account_threepid_delegates_email: false
 
 # The server to use for phone number threepid validation. When empty, validation cannot happen, as Synapse doesn't support it.
 # To make it work, this should be pointed to an identity server.
-synapse_account_threepid_delegates_msisdn: ''
+synapse_account_threepid_delegates_msisdn: false
 
 # Users who register on this homeserver will automatically be joined to these rooms.
 # Rooms are to be specified using addresses (e.g. `#address:example.com`)
@@ -139,7 +144,7 @@ synapse_auto_join_rooms: []
 synapse_autocreate_auto_join_rooms: true
 
 # Controls password-peppering for Synapse. Not to be changed after initial setup.
-#synapse_password_config_pepper: ""
+synapse_password_config_pepper: false
 
 # Controls if Synapse allows people to authenticate against its local database.
 # It may be useful to disable this if you've configured additional password providers
@@ -208,6 +213,7 @@ synapse_metrics_port: 9100
 # Enable the Synapse manhole
 # See https://github.com/matrix-org/synapse/blob/master/docs/manhole.md
 synapse_manhole_enabled: false
+synapse_manhole_port: "9000"
 
 
 # Send ERROR logs to sentry.io for easier tracking
@@ -230,6 +236,8 @@ synapse_turn_allow_guests: False
 synapse_email_enabled: false
 synapse_email_smtp_host: ""
 synapse_email_smtp_port: 587
+synapse_email_smtp_user: ""
+synapse_email_smtp_password: ""
 synapse_email_smtp_require_transport_security: false
 synapse_email_notif_from: "Matrix <matrix@{{ synapse_domain }}>"
 synapse_email_client_base_url: "{% if synapse_server_fqdn_riot is defined %}https://{{ synapse_server_fqdn_riot }}{% endif %}"
