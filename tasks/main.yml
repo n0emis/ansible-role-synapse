@@ -65,6 +65,7 @@
     virtualenv: "{{ synapse_venv_path }}"
     virtualenv_command: /usr/bin/python3 -m venv
     extra_args: --upgrade
+  notify: restart synapse
   become: yes
   become_user: "{{ synapse_user }}"
 
