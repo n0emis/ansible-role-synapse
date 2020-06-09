@@ -30,32 +30,6 @@
     - "{{ synapse_data_directory }}"
     - "{{ synapse_media_store_path }}"
 
-- name: Add signing key
-  copy:
-    dest: "{{ synapse_config_path }}/{{ synapse_server_fqdn_matrix }}.signing.key"
-    content: "{{ synapse_signing_key }}"
-    owner: "{{ synapse_user }}"
-    group: "{{ synapse_group }}"
-    mode: "0440"
-
-- name: Add homeserver config
-  template:
-    src: "homeserver.yaml.j2"
-    dest: "{{ synapse_config_path }}/homeserver.yaml"
-    owner: "{{ synapse_user }}"
-    group: "{{ synapse_group }}"
-    mode: "0440"
-  notify: restart synapse
-
-- name: Add log config
-  template:
-    src: "synapse.log.config.j2"
-    dest: "{{ synapse_config_path }}/{{ synapse_server_fqdn_matrix }}.log.config"
-    owner: "{{ synapse_user }}"
-    group: "{{ synapse_group }}"
-    mode: "0440"
-  notify: restart synapse
-
 - name: Make sure synapse is installed to the VEnv
   pip:
     name:
@@ -68,6 +42,43 @@
   notify: restart synapse
   become: yes
   become_user: "{{ synapse_user }}"
+
+- name: Generate secrets and first config-file
+  command: "{{ synapse_venv_path }}/bin/python -m synapse.app.homeserver --server-name {{ synapse_domain }} --config-path={{ synapse_config_path }}/homeserver.yaml --generate-config --report-stats=no"
+  when: not (synapse_registration_shared_secret is defined and synapse_registration_shared_secret != "")
+
+- name: Notify users about secrets
+  fail:
+    msg: "Secrect and keys were generated for you. See the README.md (-> Secrets) for further details"
+  when: not (synapse_registration_shared_secret is defined and synapse_registration_shared_secret != "")
+
+- name: Add signing key
+  copy:
+    dest: "{{ synapse_config_path }}/{{ synapse_domain }}.signing.key"
+    content: "{{ synapse_signing_key }}"
+    owner: "{{ synapse_user }}"
+    group: "{{ synapse_group }}"
+    mode: "0440"
+  when: synapse_registration_shared_secret is defined and synapse_registration_shared_secret != ""
+
+- name: Add homeserver config
+  template:
+    src: "homeserver.yaml.j2"
+    dest: "{{ synapse_config_path }}/homeserver.yaml"
+    owner: "{{ synapse_user }}"
+    group: "{{ synapse_group }}"
+    mode: "0440"
+  notify: restart synapse
+  when: synapse_registration_shared_secret is defined and synapse_registration_shared_secret != ""
+
+- name: Add log config
+  template:
+    src: "synapse.log.config.j2"
+    dest: "{{ synapse_config_path }}/{{ synapse_domain }}.log.config"
+    owner: "{{ synapse_user }}"
+    group: "{{ synapse_group }}"
+    mode: "0440"
+  notify: restart synapse
 
 - name: Upload systemd service file
   template:

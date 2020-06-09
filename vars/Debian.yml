@@ -7,6 +7,7 @@ synapse_dependencies:
   - python3-wheel
   - python3-setuptools
   - python3-virtualenv
+  - python3-venv
   - sqlite3
   - libssl-dev
   - libjpeg-dev
