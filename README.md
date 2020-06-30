@@ -13,7 +13,7 @@ Ansible role for installation and configuration of matrix synapse
 | ------------- | -------- | ------------- | ------- |
 | `synapse_user` | User created for running the systemd service | `matrix-synapse` |
 | `synapse_group` | Group for the user created for the systemd service | `{{ synapse_user }}` |
-| `synapse_pip_version` | Version of matrix-synapse that is going to be installed | `1.14.0` | 
+| `synapse_pip_version` | Version of matrix-synapse that is going to be installed | `1.15.1` | 
 | `synapse_systemd_service_name` | The name of the systemd service file | `matrix-synapse` |
 | `synapse_config_path` | Path of synapse configuration directory | `/etc/matrix-synapse` |
 | `synapse_venv_path` | Path of python virtualenv directory | `/opt/venvs/matrix-synapse` |
