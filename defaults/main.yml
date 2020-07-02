@@ -7,7 +7,7 @@ synapse_media_store_path: "{{ synapse_data_directory }}/media-store"
 synapse_user: matrix-synapse
 synapse_group: "{{ synapse_user }}"
 
-synapse_pip_version: "1.15.1"
+synapse_pip_version: "1.15.2"
 
 synapse_server_fqdn_matrix: "{{ synapse_domain }}"
 
