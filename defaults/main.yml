@@ -145,6 +145,9 @@ synapse_auto_join_rooms: []
 # automatically if they don't already exist.
 synapse_autocreate_auto_join_rooms: true
 
+# Controls wheter password login is enabled
+synapse_password_config_enabled: true
+
 # Controls password-peppering for Synapse. Not to be changed after initial setup.
 synapse_password_config_pepper: false
 
