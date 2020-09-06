@@ -12,3 +12,4 @@ synapse_dependencies:
   - libssl-dev
   - libjpeg-dev
   - libxslt1-dev
+  - libpq-dev
