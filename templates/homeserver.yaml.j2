@@ -231,7 +231,7 @@ listeners:
         compress: false
 {% endif %}
 
-{% if synapse_federation_enabled and not synapse_tls_federation_listener_enabled %}
+{% if synapse_federation_enabled and synapse_federation_listener_enabled and not synapse_tls_federation_listener_enabled %}
   # Unsecure HTTP listener (Federation API): for when matrix traffic passes through a reverse proxy
   # that unwraps TLS.
   - port: {{ synapse_federation_listener_port }}
@@ -252,6 +252,8 @@ listeners:
     bind_addresses: ['0.0.0.0']
     type: manhole
 {% endif %}
+
+  {{ synapse_additional_listeners }}
 
 
 ## Homeserver blocking ##
