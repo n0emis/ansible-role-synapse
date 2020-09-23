@@ -7,7 +7,12 @@ synapse_media_store_path: "{{ synapse_data_directory }}/media-store"
 synapse_user: matrix-synapse
 synapse_group: "{{ synapse_user }}"
 
-synapse_pip_version: "1.15.2"
+synapse_pip_packages:
+  - pip
+  - setuptools
+  - "matrix-synapse[all]=={{ synapse_pip_version }}"
+synapse_pip_packages_additional: []
+synapse_pip_version: "1.19.3"
 
 synapse_server_fqdn_matrix: "{{ synapse_domain }}"
 
@@ -100,7 +105,9 @@ synapse_tls_federation_listener_port: 8448
 
 synapse_http_listener_enabled: true
 synapse_http_listener_port: "8008"
+synapse_federation_listener_enabled: true
 synapse_federation_listener_port: "8048"
+synapse_additional_listeners: ""
 
 # Enable this to allow Synapse to report utilization statistics about your server to matrix.org
 # (things like number of users, number of messages sent, uptime, load, etc.)

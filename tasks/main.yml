@@ -32,10 +32,7 @@
 
 - name: Make sure synapse is installed to the VEnv
   pip:
-    name:
-      - pip
-      - setuptools
-      - "matrix-synapse[all]=={{ synapse_pip_version }}"
+    name: "{{ synapse_pip_packages + synapse_pip_packages_additional }}"
     virtualenv: "{{ synapse_venv_path }}"
     virtualenv_command: /usr/bin/python3 -m venv
     extra_args: --upgrade
