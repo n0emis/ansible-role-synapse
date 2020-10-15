@@ -220,6 +220,7 @@ synapse_url_preview_enabled: true
 # Enable exposure of metrics to Prometheus
 # See https://github.com/matrix-org/synapse/blob/master/docs/metrics-howto.md
 synapse_metrics_enabled: false
+synapse_metrics_listener_enabled: false
 synapse_metrics_port: 9100
 
 # Enable the Synapse manhole

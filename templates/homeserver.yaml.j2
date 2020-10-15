@@ -197,7 +197,7 @@ federation_ip_range_blacklist:
 #   webclient: A web client. Requires web_client_location to be set.
 #
 listeners:
-{% if synapse_metrics_enabled %}
+{% if synapse_metrics_enabled and synapse_metrics_listener_enabled %}
   - type: metrics
     port: {{ synapse_metrics_port }}
     bind_addresses:
