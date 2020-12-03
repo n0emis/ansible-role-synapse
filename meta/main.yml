@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: synapse
   author: n0emis
   description: install a synapse homeserver
 
