@@ -10,6 +10,7 @@
   group:
     name: "{{ synapse_group }}"
     state: present
+    system: yes
 
 - name: Create user
   user:
@@ -17,6 +18,7 @@
     group: "{{ synapse_group }}"
     create_home: yes
     home: "{{ synapse_venv_path }}"
+    system: yes
 
 - name: Create required folders
   file:
