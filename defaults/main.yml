@@ -8,11 +8,13 @@ synapse_user: matrix-synapse
 synapse_group: "{{ synapse_user }}"
 
 synapse_pip_packages:
-  - pip
-  - setuptools
+  - "pip"
+  - "setuptools"
   - "matrix-synapse[all]=={{ synapse_pip_version }}"
+  - "cryptography>=3.3"
+  - "pyOpenSSL"
 synapse_pip_packages_additional: []
-synapse_pip_version: "1.19.3"
+synapse_pip_version: "1.24.0"
 
 synapse_server_fqdn_matrix: "{{ synapse_domain }}"
 
