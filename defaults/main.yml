@@ -48,7 +48,7 @@ synapse_id_servers_public: ['matrix.org', 'vector.im']
 # This most likely gets overwritten later, so that a local Identity server is used.
 synapse_trusted_third_party_id_servers: "{{ synapse_id_servers_public }}"
 
-synapse_max_upload_size_mb: 10
+synapse_max_upload_size_mb: 50
 
 # The tmpfs at /tmp needs to be large enough to handle multiple concurrent file uploads.
 synapse_tmp_directory_size_mb: "{{ synapse_max_upload_size_mb * 50 }}"
