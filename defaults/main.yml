@@ -14,7 +14,7 @@ synapse_pip_packages:
   - "cryptography>=3.3"
   - "pyOpenSSL"
 synapse_pip_packages_additional: []
-synapse_pip_version: "1.24.0"
+synapse_pip_version: "1.66.0"
 
 synapse_server_fqdn_matrix: "{{ synapse_domain }}"
 
@@ -137,14 +137,6 @@ synapse_enable_group_creation: false
 
 # A list of 3PID types which users must supply when registering (possible values: email, msisdn).
 synapse_registrations_require_3pid: []
-
-# The server to use for email threepid validation. When empty, Synapse does it by itself.
-# Otherwise, this should be pointed to an identity server.
-synapse_account_threepid_delegates_email: false
-
-# The server to use for phone number threepid validation. When empty, validation cannot happen, as Synapse doesn't support it.
-# To make it work, this should be pointed to an identity server.
-synapse_account_threepid_delegates_msisdn: false
 
 # Users who register on this homeserver will automatically be joined to these rooms.
 # Rooms are to be specified using addresses (e.g. `#address:example.com`)
